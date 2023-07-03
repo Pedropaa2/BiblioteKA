@@ -10,7 +10,7 @@ class Borrow(models.Model):
     return_date = models.DateTimeField(default=None)
     is_delay = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_retuned = models.BooleanField(default=True)
+    is_returned = models.BooleanField(default=True)
     blocking_end_date = models.DateTimeField(null=True, blank=True)
 
     user = models.ForeignKey(

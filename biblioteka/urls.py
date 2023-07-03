@@ -24,4 +24,6 @@ urlpatterns = [
     path("api/", include("app_copy.urls")),
     path("api/", include("book.urls")),
     path("api/", include("borrow.urls")),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", SpectacularSwaggerView.as_view()),
 ]

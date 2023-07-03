@@ -9,9 +9,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=255)
     language = models.CharField(max_length=255)
     publication_date = models.DateTimeField(default=timezone.now)
-    
-    user = models.ForeignKey(
+    user = models.ManyToManyField(
         "users.User",
-        on_delete=models.CASCADE,
-        related_name="book"
+        related_name="books"
     )

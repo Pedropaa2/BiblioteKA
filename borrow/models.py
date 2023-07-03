@@ -7,33 +7,25 @@ from django.dispatch import receiver
 
 class Borrow(models.Model):
     borrow_date = models.DateTimeField(default=timezone.now)
-    return_date = models.DateTimeField(default=return_date)
+    return_date = models.DateTimeField(default=None)
     is_delay = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_retuned = models.BooleanField(default=True)
     blocking_end_date = models.DateTimeField(null=True, blank=True)
 
     user = models.ForeignKey(
-        "users.User",
-        on_delete=models.CASCADE,
-        related_name="borrow"
+        "users.User", on_delete=models.CASCADE, related_name="borrow"
     )
 
     copy = models.ForeignKey(
-        "app_copy.Copy",
-        on_delete=models.PROTECT,
-        related_name="copy"
+        "app_copy.Copy", on_delete=models.PROTECT, related_name="copy"
     )
 
     def save(self, *args, **kwargs):
         if not self.return_date:
-            self.return_date = self.borrow_date + timedelta(
-                days=3
-                )
+            self.return_date = self.borrow_date + timedelta(days=3)
             if self.return_date.weekday() in [5, 6]:
-                self.return_date += timedelta(
-                    days=3 - self.return_date.weekday()
-                    )
+                self.return_date += timedelta(days=3 - self.return_date.weekday())
 
             if self.return_date and self.return_date < timezone.now():
                 self.is_delay = True
@@ -52,6 +44,7 @@ class Borrow(models.Model):
 @receiver(post_save, sender=Borrow)
 def update_user_blocked_status(sender, instance, **kwargs):
     instance.update_blocked_status()
+
 
 #  Pedro aqui estara chamando a função para fazer o updated do is_blocked
 # na tabela do usuario

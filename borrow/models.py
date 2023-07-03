@@ -20,7 +20,7 @@ class Borrow(models.Model):
     )
 
     copy = models.ForeignKey(
-        "copy.copy",
+        "app_copy.Copy",
         on_delete=models.PROTECT,
         related_name="copy"
     )

@@ -53,7 +53,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "users",
-    "app_copy"
+    "app_copy",
+    "book",
+    "borrow",
 ]
 
 MIDDLEWARE = [

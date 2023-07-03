@@ -4,12 +4,13 @@ from django.db import models
 class ExpectedChoice(models.TextChoices):
     BAD = "Bad"
     GOOD = "Good"
-    VERY_GOOD= "Very Good"
- 
+    VERY_GOOD = "Very Good"
+
 
 class Copy(models.Model):
-
-    book = models.ForeignKey("books.Book" , on_delete=models.CASCADE, related_name='copies')
+    book = models.ForeignKey(
+        "book.Book", on_delete=models.CASCADE, related_name="copies"
+    )
     condition = models.CharField(max_length=20, choices=ExpectedChoice.choices)
     paperback = models.IntegerField()
     quantity = models.IntegerField()

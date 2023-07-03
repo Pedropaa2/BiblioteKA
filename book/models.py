@@ -10,24 +10,16 @@ class Book(models.Model):
     language = models.CharField(max_length=255)
     publication_date = models.DateTimeField(default=timezone.now)
 
-    bookOwner = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, related_name="owner_book"
-    )
-
-    user = models.ManyToManyField(
+    follow = models.ManyToManyField(
         "users.User", through="book.UserBooks", related_name="user_book"
     )
 
 
 class UserBooks(models.Model):
-    user = models.ForeignKey(
+    follow = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="user_marks"
     )
 
     book = models.ForeignKey(
         "book.Book", on_delete=models.CASCADE, related_name="book_marks"
     )
-
-    # user = models.ForeignKey(
-    #     "users.User", on_delete=models.CASCADE, related_name="book"
-    # )

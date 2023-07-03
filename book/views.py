@@ -13,10 +13,6 @@ class BookListCreateView(generics.ListCreateAPIView):
 
     serializer_class = BookSerializer
 
-    def perform_create(self, serializer):
-        print(serializer)
-        serializer.save(bookOwner=self.request.user)
-
 
 class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()

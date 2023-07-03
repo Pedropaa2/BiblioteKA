@@ -1,14 +1,20 @@
-
 from rest_framework import generics
 
 from app_copy.models import Copy
 from app_copy.serializers import CopySerializer
 from drf_spectacular.utils import extend_schema
+from book.models import Book
+from django.shortcuts import get_object_or_404
 
 
 class CopyView(generics.ListCreateAPIView):
-    queryset =  Copy.objects.all()
+    queryset = Copy.objects.all()
     serializer_class = CopySerializer
+
+    def perform_create(self, serializer):
+        pk = self.kwargs["pk"]
+        book = get_object_or_404(Book, pk=pk)
+        serializer.save(book=book)
 
     @extend_schema(
         operation_id="copies_get",

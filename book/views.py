@@ -1,7 +1,6 @@
 from rest_framework import generics
 from .models import Book
 from .serializers import BookSerializer, UserBooksSerializer
-from users.models import User
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Book, UserBooks

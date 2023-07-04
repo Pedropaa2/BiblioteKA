@@ -6,6 +6,8 @@ from drf_spectacular.utils import extend_schema
 from book.models import Book
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.views import Response, status
+
 
 class CopyView(generics.ListCreateAPIView):
     queryset = Copy.objects.all()
@@ -23,17 +25,18 @@ class CopyView(generics.ListCreateAPIView):
         description="Rota de cadastro de cópia.",
     )
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        pk = self.kwargs["pk"]
+        existing_copy = Copy.objects.filter(book_id=pk).exists()
+        if existing_copy:
+            return Response({"detail": "A copy for this book already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
 
 class CopyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [AssociateOnlyPermission]
+    
 
     def perform_create(self, serializer):
         pk = self.kwargs["pk"]

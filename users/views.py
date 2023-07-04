@@ -1,3 +1,4 @@
+from app_copy.permissions import AssociateOnlyPermission
 from .models import User
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import UserSerializer
@@ -32,6 +33,8 @@ class UserView(generics.ListCreateAPIView):
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AssociateOnlyPermission]
 
     @extend_schema(
         operation_id="user_get",

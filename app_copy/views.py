@@ -19,13 +19,6 @@ class CopyView(generics.ListCreateAPIView):
         serializer.save(book=book)
 
     @extend_schema(
-        operation_id="copies_get",
-        description="Rota de listagem de cópias cadastrados.",
-    )
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    @extend_schema(
         operation_id="copy_post",
         description="Rota de cadastro de cópia.",
     )
@@ -39,12 +32,20 @@ class CopyView(generics.ListCreateAPIView):
 class CopyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AssociateOnlyPermission]
 
     def perform_create(self, serializer):
         pk = self.kwargs["pk"]
         book = get_object_or_404(Book, pk=pk)
         serializer.save(book=book)
 
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+    
     @extend_schema(
         operation_id="copy_get",
         description="Rota de listagem de uma cópia específica.",

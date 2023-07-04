@@ -1,6 +1,6 @@
 from rest_framework import generics
 from .models import Borrow
-from .serializers import BorrowSerializer
+from .serializers import BorrowSerializer, BorrowDetailsSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -35,8 +35,11 @@ class BorrowingBookView(generics.ListCreateAPIView):
 
 
 class BorrowingBookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     queryset = Borrow.objects.all()
-    serializer_class = BorrowSerializer
+    serializer_class = BorrowDetailsSerializer
 
     def perform_destroy(self, instance):
         if instance.is_retuned:

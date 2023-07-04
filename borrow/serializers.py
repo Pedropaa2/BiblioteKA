@@ -82,5 +82,3 @@ class BorrowDetailsSerializer(serializers.ModelSerializer):
         instance.return_date = return_date
         instance.save()
         return instance
-
-    #     instance.user.update_blocked_status()

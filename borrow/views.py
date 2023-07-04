@@ -13,7 +13,7 @@ class BorrowBooksView(generics.ListAPIView):
     serializer_class = BorrowSerializer
 
 
-class BorrowingBookView(generics.ListCreateAPIView):
+class BorrowingBookView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -42,13 +42,13 @@ class BorrowingBookDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BorrowDetailsSerializer
 
     def perform_destroy(self, instance):
-        if instance.is_retuned:
+        if instance.is_returned:
 
-            instance.copy.quantity += 1
+            instance.Copy.quantity += 1
+            instance.Copy.save()
+
+            instance.copy.is_returned = True
             instance.copy.save()
 
-            instance.copy.is_retuned = True
-            instance.copy.save()
-
-            instance.is_retuned = True
+            instance.is_returned = True
             instance.save()

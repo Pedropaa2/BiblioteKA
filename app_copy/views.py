@@ -26,9 +26,14 @@ class CopyView(generics.ListCreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         pk = self.kwargs["pk"]
-        existing_copy = Copy.objects.filter(book_id=pk).exists()
+        existing_copy = Copy.objects.filter(book_id=pk).first()
+
         if existing_copy:
-            return Response({"detail": "A copy for this book already exists."}, status=status.HTTP_400_BAD_REQUEST)
+            quantity = request.data.get("quantity", 0)
+            existing_copy.quantity += int(quantity)
+            existing_copy.save()
+            serializer = self.get_serializer(existing_copy)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         return super().post(request, *args, **kwargs)
 

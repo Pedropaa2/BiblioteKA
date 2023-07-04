@@ -17,4 +17,4 @@ class Copy(models.Model):
     reviews = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
 
     def __str__(self):
-        return f"Copy {self.pk} - {self.book.title}"
+        return f"Copy {self.pk} - {self.book.name}"

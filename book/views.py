@@ -7,6 +7,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Book, UserBooks
 from django.core.mail import send_mail
+import os
+import dotenv
 
 class BookListCreateView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -37,7 +39,7 @@ class FollowBookView(generics.ListCreateAPIView):
         book = Book.objects.get(id=book_id)
         subject = "Novo seguidor de livro"
         message = f"Você tem um novo seguidor para o livro {book.name}!"
-        from_email = "djeff.walla99@gmail.com"
+        from_email = os.getenv('EMAIL_HOST_USER')
         to_email = self.request.user.email
         send_mail(subject, message, from_email, [to_email])
         

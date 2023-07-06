@@ -6,11 +6,27 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from users.models import User
 from app_copy.models import Copy
+from app_copy.serializers import CopySerializer
 
 
 class BorrowBooksView(generics.ListAPIView):
-    queryset = Borrow.objects.filter(is_returned=False)
+    queryset = Borrow.objects.all()
     serializer_class = BorrowSerializer
+
+    def get_queryset(self):
+        is_returned = self.request.query_params.get("is_returned")
+
+        queryset = super().get_queryset()
+
+        if is_returned:
+            if is_returned.lower() == "true":
+                queryset = queryset.filter(is_returned=True)
+                return queryset
+            elif is_returned.lower() == "false":
+                queryset = queryset.filter(is_returned=False)
+                return queryset
+
+        return queryset
 
 
 class BorrowingBookView(generics.CreateAPIView):
@@ -40,15 +56,13 @@ class BorrowingBookDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Borrow.objects.all()
     serializer_class = BorrowDetailsSerializer
+    lookup_url_kwarg = "pk"
 
     def perform_destroy(self, instance):
-        if instance.is_returned:
+        copy_table = Copy.objects.get(id=instance.copy_id)
 
-            instance.Copy.quantity += 1
-            instance.Copy.save()
+        copy_table.quantity += 1
+        copy_table.save()
 
-            instance.copy.is_returned = True
-            instance.copy.save()
-
-            instance.is_returned = True
-            instance.save()
+        instance.is_returned = True
+        instance.save()

@@ -38,10 +38,16 @@ class CopyView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
+class AllCopyView(generics.ListCreateAPIView):
+    queryset = Copy.objects.all()
+    serializer_class = CopySerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [AssociateOnlyPermission]
+
+
 class CopyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
-    
 
     def perform_create(self, serializer):
         pk = self.kwargs["pk"]
@@ -53,7 +59,7 @@ class CopyDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
-    
+
     @extend_schema(
         operation_id="copy_get",
         description="Rota de listagem de uma cópia específica.",

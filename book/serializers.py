@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from .models import Book, UserBooks
+from users.serializers import UserSerializer
 
 
 class BookSerializer(serializers.ModelSerializer):
+    followers = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Book
         fields = [
@@ -13,12 +16,8 @@ class BookSerializer(serializers.ModelSerializer):
             "publisher",
             "language",
             "publication_date",
-            "follow",
+            "followers",
         ]
-
-    def create(self, validated_data: dict):
-        book = Book.objects.create(**validated_data)
-        return book
 
 
 class UserBooksSerializer(serializers.ModelSerializer):

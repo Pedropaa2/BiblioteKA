@@ -3,14 +3,14 @@ from django.utils import timezone
 
 
 class Book(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255)
     language = models.CharField(max_length=255)
     publication_date = models.DateTimeField(default=timezone.now)
 
-    follow = models.ManyToManyField(
+    followers = models.ManyToManyField(
         "users.User", through="book.UserBooks", related_name="user_book"
     )
 

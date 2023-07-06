@@ -18,7 +18,7 @@ class BookListCreateView(generics.ListCreateAPIView):
 
 class FollowBookView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [AssociateOnlyPermission]
+    permission_classes = [AllowAny]
     queryset = UserBooks.objects.all()
     serializer_class = UserBooksSerializer
 
@@ -26,6 +26,15 @@ class FollowBookView(generics.ListCreateAPIView):
         pk = self.kwargs["pk"]
         book = Book.objects.get(id=pk)
         serializer.save(follow=self.request.user, book=book)
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        book_id = self.kwargs["pk"]
+        users_following = UserBooks.objects.filter(book_id=book_id).values_list(
+            "follow__username", flat=True
+        )
+        response.data["followers"] = list(users_following)
+        return response
 
 
 class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):

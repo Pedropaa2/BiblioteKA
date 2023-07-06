@@ -34,7 +34,7 @@ class BorrowSerializer(serializers.ModelSerializer):
         return_date = borrow_date + timedelta(days=3)
 
         if return_date.weekday() in [5, 6]:
-            return_date += timedelta(days=3 - return_date.weekday())
+            return_date += timedelta(days=1)
 
         if return_date < datetime_safe.datetime.now():
             borrow.is_delay = True
@@ -78,7 +78,6 @@ class BorrowDetailsSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return_date = validated_data.get('return_date')
-
         instance.return_date = return_date
         instance.save()
         return instance

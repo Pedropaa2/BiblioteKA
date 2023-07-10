@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.views import Response, status
 from .models import Borrow
 from .serializers import BorrowSerializer, BorrowDetailsSerializer
 from django.shortcuts import get_object_or_404
@@ -55,6 +56,7 @@ class BorrowingBookView(generics.CreateAPIView):
             if a["is_active"] == False:
                 user.blocked = True
                 user.save()
+                break
             else:
                 user.blocked = False
                 user.save()
@@ -62,10 +64,16 @@ class BorrowingBookView(generics.CreateAPIView):
         book_copy = get_object_or_404(Copy, id=self.kwargs.get("pk"))
 
         if user.blocked:
-            raise Exception("Bloceked User!")
+            return Response(
+                {"detail": "User is blocked!"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if book_copy.quantity == 0:
-            raise Exception("Book not avaiable")
+            return Response(
+                {"detail": "Book not avaiable."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         serializer.save(user=user, copy=book_copy)
 

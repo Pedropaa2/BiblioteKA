@@ -17,16 +17,15 @@ class BorrowSerializer(serializers.ModelSerializer):
             "blocking_end_date",
         ]
         read_only_fields = [
-              "id",
-              "borrow_date",
-              "return_date",
-              "is_delay",
-              "is_active",
-              "is_returned",
-              "blocking_end_date"
-              "user",
-              "copy",
-         ]
+            "id",
+            "borrow_date",
+            "return_date",
+            "is_delay",
+            "is_active",
+            "is_returned",
+            "blocking_end_date" "user",
+            "copy",
+        ]
 
     def create(self, validated_data):
         borrow = Borrow.objects.create(**validated_data)
@@ -66,18 +65,19 @@ class BorrowDetailsSerializer(serializers.ModelSerializer):
             "blocking_end_date",
         ]
         read_only_fields = [
-              "id",
-              "borrow_date",
-              "is_delay",
-              "is_active",
-              "is_returned",
-              "blocking_end_date"
-              "user",
-              "copy",
-         ]
+            "id",
+            "borrow_date",
+            "is_delay",
+            "is_active",
+            "is_returned",
+            "blocking_end_date" "user",
+            "copy",
+        ]
 
     def update(self, instance, validated_data):
-        return_date = validated_data.get('return_date')
+        return_date = validated_data.get("return_date")
+
+        return_date = validated_data.get("return_date")
         instance.return_date = return_date
         instance.save()
         return instance

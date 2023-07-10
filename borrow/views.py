@@ -13,9 +13,11 @@ class BorrowBooksView(generics.ListAPIView):
     queryset = Borrow.objects.all()
     serializer_class = BorrowSerializer
 
-    @extend_schema(operation_id='borrow_get',
-                   description='Mostrar todos os emprestimos de livros',
-                   tags=['Borrow'])
+    @extend_schema(
+        operation_id="borrow_get",
+        description="Mostrar todos os emprestimos de livros",
+        tags=["Borrow"],
+    )
     def get_queryset(self):
         is_returned = self.request.query_params.get("is_returned")
 
@@ -39,19 +41,31 @@ class BorrowingBookView(generics.CreateAPIView):
     queryset = Borrow.objects.filter(is_returned=False)
     serializer_class = BorrowSerializer
 
-    @extend_schema(operation_id='borrow_post',
-                   description='Criar emprestimo de livro',
-                   tags=['Borrow'])
+    @extend_schema(
+        operation_id="borrow_post",
+        description="Criar emprestimo de livro",
+        tags=["Borrow"],
+    )
     def perform_create(self, serializer):
-
         user = get_object_or_404(User, username=self.kwargs.get("username"))
+        borrows = Borrow.objects.filter(user=user)
+        serializerr = BorrowSerializer(borrows, many=True)
+
+        for a in serializerr.data:
+            if a["is_active"] == False:
+                user.blocked = True
+                user.save()
+            else:
+                user.blocked = False
+                user.save()
+
         book_copy = get_object_or_404(Copy, id=self.kwargs.get("pk"))
 
         if user.blocked:
             raise Exception("Bloceked User!")
 
         if book_copy.quantity == 0:
-            raise Exception("Book not avaible")
+            raise Exception("Book not avaiable")
 
         serializer.save(user=user, copy=book_copy)
 
@@ -64,9 +78,11 @@ class BorrowingBookDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BorrowDetailsSerializer
     lookup_url_kwarg = "pk"
 
-    @extend_schema(operation_id='borrow_delete',
-                   description='Soft delete do emprestimo de livro',
-                   tags=['Borrow'])
+    @extend_schema(
+        operation_id="borrow_delete",
+        description="Soft delete do emprestimo de livro",
+        tags=["Borrow"],
+    )
     def perform_destroy(self, instance):
         copy_table = Copy.objects.get(id=instance.copy_id)
 

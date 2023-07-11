@@ -10,7 +10,6 @@ from django.core.mail import send_mail
 import os
 import dotenv
 
-
 class BookListCreateView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [AssociateOnlyPermission]
@@ -33,6 +32,7 @@ class FollowBookView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         book_id = self.kwargs["pk"]
+
         user = self.request.user
 
         if UserBooks.objects.filter(follow=user, book_id=book_id).exists():

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "app_copy",
     "book",
     "borrow",
+    "corsheaders",
 ]
 
 REST_FRAMEWORK = {
@@ -72,6 +73,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "biblioteka.urls"
@@ -182,3 +185,8 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API para gerenciar uma biblioteca de livros.",
     "VERSION": "",
 }
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]

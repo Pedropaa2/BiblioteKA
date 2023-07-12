@@ -24,3 +24,13 @@ class UserBooksSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBooks
         exclude = ["follow", "book"]
+
+        def validate(self, attrs):
+            user_email = self.context["request"].user.email
+            book = attrs["book"]
+
+            # Verificar se já existe um registro com o mesmo email do usuário
+            if UserBooks.objects.filter(follow__email=user_email, book=book).exists():
+                raise serializers.ValidationError("Você já está seguindo este livro.")
+
+            return attrs
